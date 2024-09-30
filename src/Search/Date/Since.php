@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Search\Date;
+namespace LucasSouzaa\Imap\Search\Date;
 
-use Ddeboer\Imap\Search\AbstractDate;
+use LucasSouzaa\Imap\Search\AbstractDate;
 
 /**
  * Represents a date after condition. Messages must have a date after the

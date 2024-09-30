@@ -2,11 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Exception;
+namespace LucasSouzaa\Imap\Exception;
 
 abstract class AbstractException extends \RuntimeException
 {
-    private const ERROR_LABELS = [
+    /**
+     * @var array
+     */
+    private static $errorLabels = [
         \E_ERROR                => 'E_ERROR',
         \E_WARNING              => 'E_WARNING',
         \E_PARSE                => 'E_PARSE',
@@ -24,18 +27,23 @@ abstract class AbstractException extends \RuntimeException
         \E_USER_DEPRECATED      => 'E_USER_DEPRECATED',
     ];
 
-    final public function __construct(string $message, int $code = 0, ?\Throwable $previous = null)
+    /**
+     * @param string     $message  The exception message
+     * @param int        $code     The exception code
+     * @param \Throwable $previous The previous exception
+     */
+    final public function __construct(string $message, int $code = 0, \Throwable $previous = null)
     {
         $errorType = '';
-        if (isset(self::ERROR_LABELS[$code])) {
-            $errorType = \sprintf('[%s] ', self::ERROR_LABELS[$code]);
+        if (isset(self::$errorLabels[$code])) {
+            $errorType = \sprintf('[%s] ', self::$errorLabels[$code]);
         }
 
         $joinString      = "\n- ";
-        $alerts          = \imap_alerts();
-        $errors          = \imap_errors();
+        $alerts          = \imap2_alerts();
+        $errors          = \imap2_errors();
         $completeMessage = \sprintf(
-            "%s%s\nimap_alerts (%s):%s\nimap_errors (%s):%s",
+            "%s%s\nimap2_alerts (%s):%s\nimap2_errors (%s):%s",
             $errorType,
             $message,
             false !== $alerts ? \count($alerts) : 0,

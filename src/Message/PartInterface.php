@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Message;
+namespace LucasSouzaa\Imap\Message;
 
 /**
  * A message part.

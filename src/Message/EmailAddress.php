@@ -2,24 +2,38 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Message;
+namespace LucasSouzaa\Imap\Message;
 
 /**
  * An e-mail address.
  */
 final class EmailAddress
 {
-    private string $mailbox;
-    private ?string $hostname;
-    private ?string $name;
-    private ?string $address;
+    /**
+     * @var string
+     */
+    private $mailbox;
 
-    public function __construct(string $mailbox, ?string $hostname = null, ?string $name = null)
+    /**
+     * @var null|string
+     */
+    private $hostname;
+
+    /**
+     * @var null|string
+     */
+    private $name;
+
+    /**
+     * @var null|string
+     */
+    private $address;
+
+    public function __construct(string $mailbox, string $hostname = null, string $name = null)
     {
         $this->mailbox  = $mailbox;
         $this->hostname = $hostname;
         $this->name     = $name;
-        $this->address  = null;
 
         if (null !== $hostname) {
             $this->address = $mailbox . '@' . $hostname;

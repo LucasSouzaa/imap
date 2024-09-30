@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap;
+namespace LucasSouzaa\Imap;
 
 /**
  * An IMAP server.

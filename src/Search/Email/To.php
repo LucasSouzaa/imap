@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Search\Email;
+namespace LucasSouzaa\Imap\Search\Email;
 
-use Ddeboer\Imap\Search\AbstractText;
+use LucasSouzaa\Imap\Search\AbstractText;
 
 /**
  * Represents a "To" email address condition. Messages must have been addressed

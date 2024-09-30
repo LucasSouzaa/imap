@@ -2,10 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap;
-
-use Ddeboer\Imap\Exception\MessageCopyException;
-use Ddeboer\Imap\Exception\MessageMoveException;
+namespace LucasSouzaa\Imap;
 
 /**
  * An IMAP message (e-mail).
@@ -66,15 +63,11 @@ interface MessageInterface extends Message\BasicMessageInterface
 
     /**
      * Move message to another mailbox.
-     *
-     * @throws MessageCopyException
      */
     public function copy(MailboxInterface $mailbox): void;
 
     /**
      * Move message to another mailbox.
-     *
-     * @throws MessageMoveException
      */
     public function move(MailboxInterface $mailbox): void;
 

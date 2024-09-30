@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Search;
+namespace LucasSouzaa\Imap\Search;
 
 /**
  * Represents a raw expression.
@@ -11,8 +11,10 @@ final class RawExpression implements ConditionInterface
 {
     /**
      * Text to be used for the condition.
+     *
+     * @var string
      */
-    private string $expression;
+    private $expression;
 
     /**
      * @param string $expression text for the condition

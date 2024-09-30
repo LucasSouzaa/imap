@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Search\State;
+namespace LucasSouzaa\Imap\Search\State;
 
-use Ddeboer\Imap\Search\ConditionInterface;
+use LucasSouzaa\Imap\Search\ConditionInterface;
 
 /**
  * Represents a NEW condition. Only new messages will match this condition.

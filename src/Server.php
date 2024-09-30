@@ -2,36 +2,56 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap;
+namespace LucasSouzaa\Imap;
 
-use Ddeboer\Imap\Exception\AuthenticationFailedException;
-use Ddeboer\Imap\Exception\ResourceCheckFailureException;
+use LucasSouzaa\Imap\Exception\AuthenticationFailedException;
+use LucasSouzaa\Imap\Exception\ResourceCheckFailureException;
 
 /**
  * An IMAP server.
  */
 final class Server implements ServerInterface
 {
-    private string $hostname;
-    private string $port;
-    private string $flags;
     /**
-     * @var mixed[]
+     * @var string Internet domain name or bracketed IP address of server
      */
-    private array $parameters;
-    private int $options;
-    private int $retries;
+    private $hostname;
+
+    /**
+     * @var string TCP port number
+     */
+    private $port;
+
+    /**
+     * @var string Optional flags
+     */
+    private $flags;
+
+    /**
+     * @var array
+     */
+    private $parameters;
+
+    /**
+     * @var int Connection options
+     */
+    private $options;
+
+    /**
+     * @var int Retries number
+     */
+    private $retries;
 
     /**
      * Constructor.
      *
-     * @param string  $hostname   Internet domain name or bracketed IP address
-     *                            of server
-     * @param string  $port       TCP port number
-     * @param string  $flags      Optional flags
-     * @param mixed[] $parameters Connection parameters
-     * @param int     $options    Connection options
-     * @param int     $retries    Retries number
+     * @param string $hostname   Internet domain name or bracketed IP address
+     *                           of server
+     * @param string $port       TCP port number
+     * @param string $flags      Optional flags
+     * @param array  $parameters Connection parameters
+     * @param int    $options    Connection options
+     * @param int    $retries    Retries number
      */
     public function __construct(
         string $hostname,
@@ -39,9 +59,9 @@ final class Server implements ServerInterface
         string $flags = '/imap/ssl/validate-cert',
         array $parameters = [],
         int $options = 0,
-        int $retries = 1,
+        int $retries = 1
     ) {
-        if (!\function_exists('imap_open')) {
+        if (!\function_exists('imap2_open')) {
             throw new \RuntimeException('IMAP extension must be enabled');
         }
 
@@ -67,12 +87,12 @@ final class Server implements ServerInterface
         $errorNumber  = 0;
         \set_error_handler(static function ($nr, $message) use (&$errorMessage, &$errorNumber): bool {
             $errorMessage = $message;
-            $errorNumber  = $nr;
+            $errorNumber = $nr;
 
             return true;
         });
 
-        $resource = \imap_open(
+        $resource = \imap2_open(
             $this->getServerString(),
             $username,
             $password,
@@ -91,7 +111,7 @@ final class Server implements ServerInterface
             ), $errorNumber);
         }
 
-        $check = \imap_check($resource);
+        $check = \imap2_check($resource);
 
         if (false === $check) {
             throw new ResourceCheckFailureException('Resource check failure');
@@ -105,8 +125,8 @@ final class Server implements ServerInterface
         }
 
         // These are necessary to get rid of PHP throwing IMAP errors
-        \imap_errors();
-        \imap_alerts();
+        \imap2_errors();
+        \imap2_alerts();
 
         return new Connection(new ImapResource($resource), $connection);
     }

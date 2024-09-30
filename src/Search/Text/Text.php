@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Search\Text;
+namespace LucasSouzaa\Imap\Search\Text;
 
-use Ddeboer\Imap\Search\AbstractText;
+use LucasSouzaa\Imap\Search\AbstractText;
 
 /**
  * Represents a message text contains condition. Messages must contain the

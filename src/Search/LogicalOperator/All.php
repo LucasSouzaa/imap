@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Search\LogicalOperator;
+namespace LucasSouzaa\Imap\Search\LogicalOperator;
 
-use Ddeboer\Imap\Search\ConditionInterface;
+use LucasSouzaa\Imap\Search\ConditionInterface;
 
 /**
  * Represents an ALL operator. Messages must match all conditions following this

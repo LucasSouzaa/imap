@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Exception;
+namespace LucasSouzaa\Imap\Exception;
 
 final class InvalidDateHeaderException extends AbstractException
 {

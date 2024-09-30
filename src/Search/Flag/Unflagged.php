@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Search\Flag;
+namespace LucasSouzaa\Imap\Search\Flag;
 
-use Ddeboer\Imap\Search\ConditionInterface;
+use LucasSouzaa\Imap\Search\ConditionInterface;
 
 /**
  * Represents a UNFLAGGED flag condition. Messages must no have the \\FLAGGED

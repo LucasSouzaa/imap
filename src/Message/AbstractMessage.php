@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Message;
+namespace LucasSouzaa\Imap\Message;
 
-use Ddeboer\Imap\Exception\InvalidDateHeaderException;
+use LucasSouzaa\Imap\Exception\InvalidDateHeaderException;
 
 abstract class AbstractMessage extends AbstractPart
 {
     /**
-     * @var null|Attachment[]
+     * @var null|array
      */
-    private ?array $attachments = null;
+    private $attachments;
 
     /**
      * Get message headers.
@@ -25,10 +25,7 @@ abstract class AbstractMessage extends AbstractPart
      */
     final public function getId(): ?string
     {
-        $messageId = $this->getHeaders()->get('message_id');
-        \assert(null === $messageId || \is_string($messageId));
-
-        return $messageId;
+        return $this->getHeaders()->get('message_id');
     }
 
     /**
@@ -37,7 +34,6 @@ abstract class AbstractMessage extends AbstractPart
     final public function getFrom(): ?EmailAddress
     {
         $from = $this->getHeaders()->get('from');
-        \assert(null === $from || \is_array($from));
 
         return null !== $from ? $this->decodeEmailAddress($from[0]) : null;
     }
@@ -49,10 +45,7 @@ abstract class AbstractMessage extends AbstractPart
      */
     final public function getTo(): array
     {
-        $emails = $this->getHeaders()->get('to');
-        \assert(null === $emails || \is_array($emails));
-
-        return $this->decodeEmailAddresses($emails ?? []);
+        return $this->decodeEmailAddresses($this->getHeaders()->get('to') ?: []);
     }
 
     /**
@@ -62,10 +55,7 @@ abstract class AbstractMessage extends AbstractPart
      */
     final public function getCc(): array
     {
-        $emails = $this->getHeaders()->get('cc');
-        \assert(null === $emails || \is_array($emails));
-
-        return $this->decodeEmailAddresses($emails ?? []);
+        return $this->decodeEmailAddresses($this->getHeaders()->get('cc') ?: []);
     }
 
     /**
@@ -75,10 +65,7 @@ abstract class AbstractMessage extends AbstractPart
      */
     final public function getBcc(): array
     {
-        $emails = $this->getHeaders()->get('bcc');
-        \assert(null === $emails || \is_array($emails));
-
-        return $this->decodeEmailAddresses($emails ?? []);
+        return $this->decodeEmailAddresses($this->getHeaders()->get('bcc') ?: []);
     }
 
     /**
@@ -88,10 +75,7 @@ abstract class AbstractMessage extends AbstractPart
      */
     final public function getReplyTo(): array
     {
-        $emails = $this->getHeaders()->get('reply_to');
-        \assert(null === $emails || \is_array($emails));
-
-        return $this->decodeEmailAddresses($emails ?? []);
+        return $this->decodeEmailAddresses($this->getHeaders()->get('reply_to') ?: []);
     }
 
     /**
@@ -101,10 +85,7 @@ abstract class AbstractMessage extends AbstractPart
      */
     final public function getSender(): array
     {
-        $emails = $this->getHeaders()->get('sender');
-        \assert(null === $emails || \is_array($emails));
-
-        return $this->decodeEmailAddresses($emails ?? []);
+        return $this->decodeEmailAddresses($this->getHeaders()->get('sender') ?: []);
     }
 
     /**
@@ -114,10 +95,7 @@ abstract class AbstractMessage extends AbstractPart
      */
     final public function getReturnPath(): array
     {
-        $emails = $this->getHeaders()->get('return_path');
-        \assert(null === $emails || \is_array($emails));
-
-        return $this->decodeEmailAddresses($emails ?? []);
+        return $this->decodeEmailAddresses($this->getHeaders()->get('return_path') ?: []);
     }
 
     /**
@@ -135,7 +113,6 @@ abstract class AbstractMessage extends AbstractPart
         $alteredValue = \str_replace(',', '', $alteredValue);
         $alteredValue = (string) \preg_replace('/^[a-zA-Z]+ ?/', '', $alteredValue);
         $alteredValue = (string) \preg_replace('/\(.*\)/', '', $alteredValue);
-        $alteredValue = (string) \preg_replace('/\<.*\>/', '', $alteredValue);
         $alteredValue = (string) \preg_replace('/\bUT\b/', 'UTC', $alteredValue);
         if (0 === \preg_match('/\d\d:\d\d:\d\d.* [\+\-]\d\d:?\d\d/', $alteredValue)) {
             $alteredValue .= ' +0000';
@@ -159,10 +136,7 @@ abstract class AbstractMessage extends AbstractPart
      */
     final public function getSize()
     {
-        $size = $this->getHeaders()->get('size');
-        \assert(null === $size || \is_int($size) || \is_string($size));
-
-        return $size;
+        return $this->getHeaders()->get('size');
     }
 
     /**
@@ -170,119 +144,47 @@ abstract class AbstractMessage extends AbstractPart
      */
     final public function getSubject(): ?string
     {
-        $subject = $this->getHeaders()->get('subject');
-        \assert(null === $subject || \is_string($subject));
-
-        return $subject;
+        return $this->getHeaders()->get('subject');
     }
 
     /**
      * Get message In-Reply-To (from headers).
-     *
-     * @return string[]
      */
     final public function getInReplyTo(): array
     {
         $inReplyTo = $this->getHeaders()->get('in_reply_to');
-        \assert(null === $inReplyTo || \is_string($inReplyTo));
 
         return null !== $inReplyTo ? \explode(' ', $inReplyTo) : [];
     }
 
     /**
      * Get message References (from headers).
-     *
-     * @return string[]
      */
     final public function getReferences(): array
     {
         $references = $this->getHeaders()->get('references');
-        \assert(null === $references || \is_string($references));
 
         return null !== $references ? \explode(' ', $references) : [];
     }
 
     /**
-     * Get first body HTML part.
+     * Get body HTML.
      */
     final public function getBodyHtml(): ?string
     {
-        $htmlParts = $this->getAllContentsBySubtype(self::SUBTYPE_HTML);
-
-        return $htmlParts[0] ?? null;
-    }
-
-    /**
-     * Get all contents parts of specific subtype (self::SUBTYPE_HTML or self::SUBTYPE_PLAIN).
-     *
-     * @return string[]
-     */
-    final public function getAllContentsBySubtype(string $subtype): array
-    {
-        $iterator  = new \RecursiveIteratorIterator($this, \RecursiveIteratorIterator::SELF_FIRST);
-        $parts     = [];
-        /** @var PartInterface $part */
+        $iterator = new \RecursiveIteratorIterator($this, \RecursiveIteratorIterator::SELF_FIRST);
         foreach ($iterator as $part) {
-            if ($subtype === $part->getSubtype()) {
-                $parts[] = $part->getDecodedContent();
-            }
-        }
-        if (\count($parts) > 0) {
-            return $parts;
-        }
-
-        // If message has no parts and is of right type, return content of message.
-        if ($subtype === $this->getSubtype()) {
-            return [$this->getDecodedContent()];
-        }
-
-        return [];
-    }
-
-    /**
-     * Get body HTML parts.
-     *
-     * @return string[]
-     */
-    final public function getBodyHtmlParts(): array
-    {
-        return $this->getAllContentsBySubtype(self::SUBTYPE_HTML);
-    }
-
-    /**
-     * Get all body HTML parts merged into 1 html.
-     */
-    final public function getCompleteBodyHtml(): ?string
-    {
-        $htmlParts = $this->getAllContentsBySubtype(self::SUBTYPE_HTML);
-
-        if (1 === \count($htmlParts)) {
-            return $htmlParts[0];
-        }
-        if (0 === \count($htmlParts)) {
-            return null;
-        }
-        \libxml_use_internal_errors(true); // Suppress parse errors, get errors with libxml_get_errors();
-
-        $newDom = new \DOMDocument();
-
-        $newBody = '';
-        $newDom->loadHTML(\implode('', $htmlParts));
-
-        $bodyTags = $newDom->getElementsByTagName('body');
-
-        foreach ($bodyTags as $body) {
-            foreach ($body->childNodes as $node) {
-                $newBody .= $newDom->saveHTML($node);
+            if (self::SUBTYPE_HTML === $part->getSubtype()) {
+                return $part->getDecodedContent();
             }
         }
 
-        $newDom = new \DOMDocument();
-        $newDom->loadHTML($newBody);
+        // If message has no parts and is HTML, return content of message itself.
+        if (self::SUBTYPE_HTML === $this->getSubtype()) {
+            return $this->getDecodedContent();
+        }
 
-        $completeHtml = $newDom->saveHTML();
-
-        return false === $completeHtml ? null : $completeHtml;
+        return null;
     }
 
     /**
@@ -290,28 +192,19 @@ abstract class AbstractMessage extends AbstractPart
      */
     final public function getBodyText(): ?string
     {
-        $plainParts = $this->getAllContentsBySubtype(self::SUBTYPE_PLAIN);
-
-        return $plainParts[0] ?? null;
-    }
-
-    /**
-     * Get all body PLAIN parts merged into 1 string.
-     *
-     * @return null|string Null if message has no PLAIN message parts
-     */
-    final public function getCompleteBodyText(): ?string
-    {
-        $plainParts = $this->getAllContentsBySubtype(self::SUBTYPE_PLAIN);
-
-        if (1 === \count($plainParts)) {
-            return $plainParts[0];
-        }
-        if (0 === \count($plainParts)) {
-            return null;
+        $iterator = new \RecursiveIteratorIterator($this, \RecursiveIteratorIterator::SELF_FIRST);
+        foreach ($iterator as $part) {
+            if (self::SUBTYPE_PLAIN === $part->getSubtype()) {
+                return $part->getDecodedContent();
+            }
         }
 
-        return \implode("\n", $plainParts);
+        // If message has no parts, return content of message itself.
+        if (self::SUBTYPE_PLAIN === $this->getSubtype()) {
+            return $this->getDecodedContent();
+        }
+
+        return null;
     }
 
     /**
@@ -328,11 +221,6 @@ abstract class AbstractMessage extends AbstractPart
         return $this->attachments;
     }
 
-    /**
-     * @param PartInterface<PartInterface> $part
-     *
-     * @return Attachment[]
-     */
     private static function gatherAttachments(PartInterface $part): array
     {
         $attachments = [];
@@ -341,7 +229,7 @@ abstract class AbstractMessage extends AbstractPart
                 $attachments[] = $childPart;
             }
             if ($childPart->hasChildren()) {
-                $attachments = [...$attachments, ...self::gatherAttachments($childPart)];
+                $attachments = \array_merge($attachments, self::gatherAttachments($childPart));
             }
         }
 
@@ -358,8 +246,6 @@ abstract class AbstractMessage extends AbstractPart
 
     /**
      * @param \stdClass[] $addresses
-     *
-     * @return EmailAddress[]
      */
     private function decodeEmailAddresses(array $addresses): array
     {

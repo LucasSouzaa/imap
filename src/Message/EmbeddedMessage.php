@@ -2,23 +2,40 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Message;
+namespace LucasSouzaa\Imap\Message;
 
 final class EmbeddedMessage extends AbstractMessage implements EmbeddedMessageInterface
 {
-    private ?Headers $headers   = null;
-    private ?string $rawHeaders = null;
-    private ?string $rawMessage = null;
+    /**
+     * @var null|Headers
+     */
+    private $headers;
 
+    /**
+     * @var null|string
+     */
+    private $rawHeaders;
+
+    /**
+     * @var null|string
+     */
+    private $rawMessage;
+
+    /**
+     * Get message headers.
+     */
     public function getHeaders(): Headers
     {
         if (null === $this->headers) {
-            $this->headers = new Headers(\imap_rfc822_parse_headers($this->getRawHeaders()));
+            $this->headers = new Headers(\imap2_rfc822_parse_headers($this->getRawHeaders()));
         }
 
         return $this->headers;
     }
 
+    /**
+     * Get raw message headers.
+     */
     public function getRawHeaders(): string
     {
         if (null === $this->rawHeaders) {
@@ -29,6 +46,11 @@ final class EmbeddedMessage extends AbstractMessage implements EmbeddedMessageIn
         return $this->rawHeaders;
     }
 
+    /**
+     * Get the raw message, including all headers, parts, etc. unencoded and unparsed.
+     *
+     * @return string the raw message
+     */
     public function getRawMessage(): string
     {
         if (null === $this->rawMessage) {
@@ -36,14 +58,6 @@ final class EmbeddedMessage extends AbstractMessage implements EmbeddedMessageIn
         }
 
         return $this->rawMessage;
-    }
-
-    /**
-     * @param resource|string $file the path to the saved file as a string, or a valid file descriptor
-     */
-    public function saveRawMessage($file): void
-    {
-        $this->doSaveContent($file, $this->getPartNumber());
     }
 
     /**

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap;
+namespace LucasSouzaa\Imap;
 
-use Ddeboer\Imap\Search\ConditionInterface;
+use LucasSouzaa\Imap\Search\ConditionInterface;
 
 /**
  * Defines a search expression that can be used to look up email messages.
@@ -14,9 +14,9 @@ final class SearchExpression implements ConditionInterface
     /**
      * The conditions that together represent the expression.
      *
-     * @var ConditionInterface[]
+     * @var array
      */
-    private array $conditions = [];
+    private $conditions = [];
 
     /**
      * Adds a new condition to the expression.

@@ -2,12 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Message;
+namespace LucasSouzaa\Imap\Message;
 
-use Ddeboer\Imap\Exception\UnsupportedCharsetException;
-
+/**
+ * Collection of message headers.
+ */
 final class Headers extends Parameters
 {
+    /**
+     * Constructor.
+     */
     public function __construct(\stdClass $headers)
     {
         parent::__construct();
@@ -16,18 +20,14 @@ final class Headers extends Parameters
         $headers = \array_change_key_case((array) $headers);
 
         foreach ($headers as $key => $value) {
-            try {
-                $this[$key] = $this->parseHeader($key, $value);
-            } catch (UnsupportedCharsetException) {
-                // safely skip header with unsupported charset
-            }
+            $this[$key] = $this->parseHeader($key, $value);
         }
     }
 
     /**
      * Get header.
      *
-     * @return null|int|\stdClass[]|string
+     * @return mixed
      */
     public function get(string $key)
     {
@@ -37,16 +37,14 @@ final class Headers extends Parameters
     /**
      * Parse header.
      *
-     * @param int|\stdClass[]|string $value
+     * @param mixed $value
      *
-     * @return int|\stdClass[]|string
+     * @return mixed
      */
     private function parseHeader(string $key, $value)
     {
         switch ($key) {
             case 'msgno':
-                \assert(\is_string($value));
-
                 return (int) $value;
             case 'from':
             case 'to':
@@ -55,7 +53,7 @@ final class Headers extends Parameters
             case 'reply_to':
             case 'sender':
             case 'return_path':
-                \assert(\is_array($value));
+                /** @var \stdClass $address */
                 foreach ($value as $address) {
                     if (isset($address->mailbox)) {
                         $address->host     = $address->host ?? null;
@@ -66,8 +64,6 @@ final class Headers extends Parameters
                 return $value;
             case 'date':
             case 'subject':
-                \assert(\is_string($value));
-
                 return $this->decode($value);
         }
 

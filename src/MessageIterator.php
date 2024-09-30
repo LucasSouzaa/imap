@@ -2,22 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap;
+namespace LucasSouzaa\Imap;
 
-use Ddeboer\Imap\Message\PartInterface;
-
-/**
- * @extends \ArrayIterator<int, MessageInterface>
- */
 final class MessageIterator extends \ArrayIterator implements MessageIteratorInterface
 {
-    private ImapResourceInterface $resource;
+    /**
+     * @var ImapResourceInterface
+     */
+    private $resource;
 
     /**
      * Constructor.
      *
      * @param ImapResourceInterface $resource       IMAP resource
-     * @param int[]                 $messageNumbers Array of message numbers
+     * @param array                 $messageNumbers Array of message numbers
      */
     public function __construct(ImapResourceInterface $resource, array $messageNumbers)
     {
@@ -28,8 +26,6 @@ final class MessageIterator extends \ArrayIterator implements MessageIteratorInt
 
     /**
      * Get current message.
-     *
-     * @return MessageInterface<PartInterface>
      */
     public function current(): MessageInterface
     {
@@ -39,8 +35,8 @@ final class MessageIterator extends \ArrayIterator implements MessageIteratorInt
                 'The current value "%s" isn\'t an integer and doesn\'t represent a message;'
                 . ' try to cycle this "%s" with a native php function like foreach or with the method getArrayCopy(),'
                 . ' or check it by calling the methods valid().',
-                \get_debug_type($current),
-                self::class
+                \is_object($current) ? \get_class($current) : \gettype($current),
+                static::class
             ));
         }
 

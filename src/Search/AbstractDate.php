@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Search;
+namespace LucasSouzaa\Imap\Search;
+
+use DateTimeInterface;
 
 /**
  * Represents a date condition.
@@ -11,20 +13,24 @@ abstract class AbstractDate implements ConditionInterface
 {
     /**
      * Format for dates to be sent to the IMAP server.
+     *
+     * @var string
      */
-    private string $dateFormat;
+    private $dateFormat;
 
     /**
      * The date to be used for the condition.
+     *
+     * @var DateTimeInterface
      */
-    private \DateTimeInterface $date;
+    private $date;
 
     /**
      * Constructor.
      *
-     * @param \DateTimeInterface $date optional date for the condition
+     * @param DateTimeInterface $date optional date for the condition
      */
-    public function __construct(\DateTimeInterface $date, string $dateFormat = 'j-M-Y')
+    public function __construct(DateTimeInterface $date, string $dateFormat = 'j-M-Y')
     {
         $this->date       = $date;
         $this->dateFormat = $dateFormat;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Search;
+namespace LucasSouzaa\Imap\Search;
 
 /**
  * Represents a text based condition. Text based conditions use a contains
@@ -12,8 +12,10 @@ abstract class AbstractText implements ConditionInterface
 {
     /**
      * Text to be used for the condition.
+     *
+     * @var string
      */
-    private string $text;
+    private $text;
 
     /**
      * Constructor.

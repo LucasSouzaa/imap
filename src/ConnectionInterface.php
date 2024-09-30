@@ -2,11 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap;
-
-use Ddeboer\Imap\Exception\CreateMailboxException;
-use Ddeboer\Imap\Exception\DeleteMailboxException;
-use Ddeboer\Imap\Exception\MailboxDoesNotExistException;
+namespace LucasSouzaa\Imap;
 
 /**
  * A connection to an IMAP server that is authenticated for a user.
@@ -35,8 +31,6 @@ interface ConnectionInterface extends \Countable
 
     /**
      * Get Mailbox quota.
-     *
-     * @return array<string, int>
      */
     public function getQuota(string $root = 'INBOX'): array;
 
@@ -58,22 +52,16 @@ interface ConnectionInterface extends \Countable
      * Get a mailbox by its name.
      *
      * @param string $name Mailbox name
-     *
-     * @throws MailboxDoesNotExistException If mailbox does not exist
      */
     public function getMailbox(string $name): MailboxInterface;
 
     /**
      * Create mailbox.
-     *
-     * @throws CreateMailboxException
      */
     public function createMailbox(string $name): MailboxInterface;
 
     /**
      * Delete mailbox.
-     *
-     * @throws DeleteMailboxException
      */
     public function deleteMailbox(MailboxInterface $mailbox): void;
 }

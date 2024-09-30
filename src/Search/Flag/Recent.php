@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ddeboer\Imap\Search\Flag;
+namespace LucasSouzaa\Imap\Search\Flag;
 
-use Ddeboer\Imap\Search\ConditionInterface;
+use LucasSouzaa\Imap\Search\ConditionInterface;
 
 /**
  * Represents an RECENT flag condition. Messages must have the \\RECENT flag
