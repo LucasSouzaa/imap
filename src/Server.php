@@ -96,7 +96,7 @@ final class Server implements ServerInterface
             $this->getServerString(),
             $username,
             $password,
-            $this->options,
+            OP_XOAUTH2,
             $this->retries,
             $this->parameters
         );
