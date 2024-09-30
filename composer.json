@@ -8,12 +8,16 @@
             "email": "seu-email@exemplo.com"
         }
     ],
+
     "autoload": {
         "psr-4": {
             "LucasSouzaa\\Imap\\": "src/"
         }
     },
     "require": {
-        "php": ">=7.2"
+        "php": "^7.2",
+        "ext-iconv": "*",
+        "ext-imap": "*",
+        "ext-mbstring": "*"
     }
 }
